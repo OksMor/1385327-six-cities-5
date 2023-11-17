@@ -1,7 +1,17 @@
 import type { History } from 'history';
 import type { AxiosInstance, AxiosError } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { UserAuth, User, Offer, Comment, CommentAuth, FavoriteAuth, UserRegister, NewOffer } from '../types/types';
+import type {
+  UserAuth,
+  User,
+  Offer,
+  Comment,
+  CommentAuth,
+  FavoriteAuth,
+  UserRegister,
+  NewOffer
+} from '../types/types';
+//import { adaptUserToClient } from '../utils/adaptersToClient';
 import { ApiRoute, AppRoute, HttpCode } from '../const';
 import { Token } from '../utils';
 

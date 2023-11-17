@@ -24,7 +24,7 @@ enum Housing {
   Hotel = 'Hotel'
 }
 
-export default class CreateOfferDto {
+export default class OfferDto {
 
   public title!: string;
 
