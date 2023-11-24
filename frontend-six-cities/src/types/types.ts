@@ -63,6 +63,22 @@ export type NewOffer = {
   images: string[];
 };
 
+export type UpdateOffer = {
+  id: string;
+  title: string;
+  description: string;
+  city: City;
+  previewImage: string;
+  isPremium: boolean;
+  type: Type;
+  bedrooms: number;
+  maxAdults: number;
+  price: number;
+  goods: string[];
+  location: Location;
+  images: string[];
+};
+
 export type NewComment = Pick<Comment, 'comment' | 'rating'>;
 export type UserAuth = Pick<User, 'email'> & { password: string };
 export type CommentAuth = NewComment &
@@ -70,3 +86,9 @@ export type CommentAuth = NewComment &
 export type FavoriteAuth = Offer['id'];
 export type UserRegister = Omit<User, 'avatarUrl'> &
   Pick<UserAuth, 'password'> & { avatar?: File };
+
+export type ValidationErrorField = {
+  property: string;
+  value: string;
+  messages: string[];
+}

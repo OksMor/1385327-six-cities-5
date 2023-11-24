@@ -10,5 +10,6 @@ export type ParamOfferId = { offerId: string } | ParamsDictionary;
 export type ShowOfferRequest = Request<ParamOfferId, OfferRdo, UpdateOfferDto>
 export type CreateOfferRequest = Request<RequestParams, RequestBody, CreateOfferDto>;
 export type UpdateOfferRequest = Request<ParamOfferId, OfferRdo, UpdateOfferDto>
+export type DeleteOfferRequest = Request<ParamOfferId>;
 export type FindRequest = Request<RequestParams, RequestBody, CreateOfferDto, FindQuery>;
 export type ParamCityName = { city: string } | ParamsDictionary;

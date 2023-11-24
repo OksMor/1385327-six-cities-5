@@ -24,13 +24,14 @@ import { City } from '../../types/index.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { OfferRdo } from './rdo/offer.rdo.js';
-import { ShortOfferRdo } from './rdo/short-offer.rdo.js';
+//import { ShortOfferRdo } from './rdo/short-offer.rdo.js';
 import {
   FindRequest,
   ShowOfferRequest,
   CreateOfferRequest,
   UpdateOfferRequest,
-  ParamOfferId,
+  DeleteOfferRequest,
+  //ParamOfferId,
   ParamCityName,
 } from './types/offer-request.types.js';
 
@@ -91,7 +92,7 @@ export class OfferController extends BaseController {
       ]
     });
     this.addRoute({
-      path: '/:city/premium',
+      path: '/premium/:city',
       method: HttpMethod.Get,
       handler: this.findPremiumByCityName,
     });
@@ -104,7 +105,7 @@ export class OfferController extends BaseController {
 
     const offers = await this.offerService.find(count, userId);
 
-    this.ok(res, fillDTO(ShortOfferRdo, offers));
+    this.ok(res, fillDTO(OfferRdo, offers));
   }
 
   // Создание предложения
@@ -150,7 +151,30 @@ export class OfferController extends BaseController {
   }
 
   // Удаление конкретного предложения
-  public async delete({ params, tokenPayload }: Request<ParamOfferId>, res: Response): Promise<void> {
+  // public async delete({ params, tokenPayload }: Request<ParamOfferId>, res: Response): Promise<void> {
+  //   const { offerId } = params;
+  //   const userId = tokenPayload.id;
+
+  //   const currentOffer = await this.offerService.findById(offerId);
+
+  //   if (currentOffer && currentOffer.author._id.toString() !== userId) {
+  //     throw new HttpError(
+  //       StatusCodes.FORBIDDEN,
+  //       'Only the author has the right to delete the offer',
+  //       'OfferController'
+  //     );
+  //   }
+
+  //   // const offer = await this.offerService.deleteById(offerId);
+  //   await this.offerService.deleteById(offerId);
+
+  //   await this.commentService.deleteByOfferId(offerId);
+  //   await this.favoriteService.deleteByOfferId(offerId);
+
+  //   this.noContent(res, null);
+  //   //this.noContent(res, offer);
+  // }
+  public async delete({ params, tokenPayload }: DeleteOfferRequest, res: Response): Promise<void> {
     const { offerId } = params;
     const userId = tokenPayload.id;
 
@@ -164,12 +188,14 @@ export class OfferController extends BaseController {
       );
     }
 
-    const offer = await this.offerService.deleteById(offerId);
+    // const offer = await this.offerService.deleteById(offerId);
+    await this.offerService.deleteById(offerId);
 
     await this.commentService.deleteByOfferId(offerId);
     await this.favoriteService.deleteByOfferId(offerId);
 
-    this.noContent(res, offer);
+    this.noContent(res, null);
+    //this.noContent(res, offer);
   }
 
   // Список премиальных предложений для города
@@ -198,7 +224,7 @@ export class OfferController extends BaseController {
       );
     }
 
-    this.ok(res, fillDTO(ShortOfferRdo, premiumOffers));
+    this.ok(res, fillDTO(OfferRdo, premiumOffers));
   }
 
 }

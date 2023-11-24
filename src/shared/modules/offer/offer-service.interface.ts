@@ -11,7 +11,7 @@ export interface OfferService extends DocumentExists {
 
   findById(offerId: OfferEntity['id'], userId?: string): Promise<DocumentType<OfferEntity> | null>
   updateById(offerId: OfferEntity['id'], dto: UpdateOfferDto): Promise<DocumentType<OfferEntity>>;
-  deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  deleteById(offerId:OfferEntity['id']):Promise<DocumentType<OfferEntity> | null>;
 
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   findPremiumByCityName(city: string, userId?: string): Promise<DocumentType<OfferEntity>[] | null>;

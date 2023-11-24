@@ -1,4 +1,18 @@
-export default class CommentDto {
+import { UserDto } from "../user/user.dto";
+
+export class CommentDto {
+
+  public text!: string;
+
+  public rating!: number;
+
+  public id!: string;
+
+  public author!: UserDto;
+  public postDate!: string;
+}
+
+export class CreateCommentDto {
 
   public text!: string;
 
@@ -6,5 +20,4 @@ export default class CommentDto {
 
   public offerId!: string;
 
-  public author!: string;
 }

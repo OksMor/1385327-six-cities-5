@@ -1,24 +1,23 @@
-// import { OfferDto } from '../dto/offer/offer.dto';
-// import { CreateOfferDto } from '../dto/offer/create-offer.dto';
-// import { UpdateOfferDto } from '../dto/offer/update-offer.dto';
+import { OfferDto } from '../dto/offer/offer.dto';
+import { Housing } from '../dto/offer/offer.dto';
 
-import { UserDto } from '../dto/user/user.dto';
-// import { CreateUserDto } from '../dto/user/create-user.dto';
-// import { UpdateUserDto } from '../dto/user/update-user.dto';
-// import { LoginUserDto } from '../dto/user/login-user.dto';
+import { UserDto, UserWithTokenDto } from '../dto/user/user.dto';
 
 // import { FavoriteDto } from '../dto/favorite/favorite.dto';
 // import { CreateFavoriteDto } from '../dto/favorite/create-favorite.dto';
 
-// import { CommentDto } from '../dto/comment/comment.dto';
-// import { CreateCommentDto } from '../dto/comment/create-comment.dto';
+import { CommentDto } from '../dto/comment/comment.dto';
 
+import { UserType } from '../const';
+import { getTime } from '../utils';
 import {
   // Location,
   // City,
+  Type,
   User,
-  // Comment,
-  // Offer,
+  Comment,
+  Offer,
+  //ShortOffer,
   // NewOffer,
   // NewComment,
   // UserAuth,
@@ -27,57 +26,84 @@ import {
   // UserRegister
   } from '../types/types';
 
+export const adaptHousingTypeToClient = (housingType: Housing): Type => {
+  switch (housingType) {
+    case Housing.Apartment:
+      return 'apartment';
+    case Housing.Hotel:
+      return 'hotel';
+    case Housing.House:
+      return 'house';
+    case Housing.Room:
+      return 'room';
+    default:
+      throw new Error(`Unknown type ${housingType}`);
+  }
+};
+// export const adaptLoginToClient =
+//   (user: UserWithTokenDto): User => ({
+//     name: user.name,
+//     email: user.email,
+//     type: user.isProType ? UserType.Pro : UserType.Regular,
+//     avatarUrl: user.avatar
+//   });
+export const adaptUserToClient = (user: UserDto): User => ({
+  name: user.name,
+  email: user.email,
+  avatarUrl: user.avatar,
+  type: user.isProType ? UserType.Pro : UserType.Regular,
+});
+
+export const adaptOfferToClient = (offer: OfferDto): Offer => ({
+  id: offer.id,
+  price: offer.rentPrice,
+  rating: offer.rating,
+  title: offer.title,
+  isPremium: offer.isPremium,
+  isFavorite: offer.isFavorite,
+  city: {
+    name: offer.city,
+    location: {
+      latitude: Number(offer.location[0]),
+      longitude: Number(offer.location[1])
+    },
+  },
+  location: {
+    latitude: Number(offer.location[0]),
+    longitude: Number(offer.location[1])
+  },
+  previewImage: offer.preview,
+  type: adaptHousingTypeToClient(offer.housingType),
+  bedrooms: offer.roomCount,
+  description: offer.description,
+  goods: offer.features,
+  images: offer.photos,
+  maxAdults: offer.guestCount,
+  host: adaptUserToClient(offer.author),
+});
+
 // export const adaptFavoriteToClient =
 //   (categories: FavoriteDto[]): Categories =>
 //     categories
 //       .map((category: FavoriteDto) => ({
-
 //       }));
 
-// export const adaptLoginToClient =
-//   (user: LoginUserDto): User => ({
-//     name: user.name,
-//     email: user.email,
-//     avatar: user.avatarUrl,
-//     token: user.token,
-//   });
+export const adaptLoginToClient = (user: UserWithTokenDto): User => ({
+  name: user.name,
+  email: user.email,
+  avatarUrl: user.avatar,
+  type: user.isProType ? UserType.Pro : UserType.Regular,
+  //token: user.token,
+});
 
-export const adaptUserToClient =
-  (user: UserDto): User => ({
-    name: user.name,
-    email: user.email,
-    avatarUrl: user.avatar,
-    type: user.isProType,
-  });
+export const adaptOffersToClient = (offers: OfferDto[]): Offer[] => offers.map((offer) => adaptOfferToClient(offer));
 
-// export const adaptOffersToClient =
-//   (offers: OfferDto[]): Tickets =>
-//     offers
-//       .filter((offer: OfferDto) =>
-//         offer.user !== null,
-//       )
-//       .map((offer: OfferDto) => ({
-//         id: offer.id,
-//         title: offer.title,
-//         description: offer.description,
-//         publishedDate: offer.postDate,
-//         image: offer.image,
-//         type: offer.type,
-//         commentsCount: offer.commentCount,
-//         user: adaptUserToClient(offer.user),
-//         categories: adaptCategoriesToClient(offer.categories),
-//         price: offer.price,
-//       }));
+export const adaptCommentToClient = (comment: CommentDto): Comment =>({
+  comment: comment.text,
+  rating: comment.rating,
+  date: comment.postDate,
+  user: adaptUserToClient(comment.author),
+  id: comment.id,
+});
 
-// export const adaptCommentsToClient =
-//   (comments: CommentDto[]): Comments =>
-//     comments
-//       .filter((comment: CommentDto) =>
-//         comment.user !== null,
-//       )
-//       .map((comment: CommentDto) => ({
-//         id: comment.id,
-//         text: comment.text,
-//         publishedDate: comment.postDate,
-//         user: adaptUserToClient(comment.user),
-//       }));
+export const adaptCommentsToClient = (comments: CommentDto[]): Comment[] => comments.map((comment) => adaptCommentToClient(comment));

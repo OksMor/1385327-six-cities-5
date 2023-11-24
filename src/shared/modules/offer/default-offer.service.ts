@@ -43,9 +43,21 @@ export class DefaultOfferService implements OfferService {
   }
 
   // Найти все предложения ------------------------------------------------------------------------------------- ()
-  public async find(query: FindQuery, userId?: string): Promise<DocumentType<OfferEntity>[]> {
+  // public async find(query: FindQuery, userId?: string): Promise<DocumentType<OfferEntity>[]> {
+  //   const limit = Number(query.size ?? DEFAULT_OFFER_COUNT);
+  //   const aggregate = userId ? [...aggregateComments, ...aggregateFavorite(userId)] : [...aggregateComments, ...aggregateDefaultFavorite];
+
+  //   return this.offerModel
+  //     .aggregate([
+  //       ...aggregate,
+  //       { $sort: { createdAt: SortType.Down } },
+  //       { $limit: limit },
+  //     ])
+  //     .exec();
+  // }
+  public async find(query: FindQuery, userId?: string | undefined): Promise<DocumentType<OfferEntity>[]> {
     const limit = Number(query.size ?? DEFAULT_OFFER_COUNT);
-    const aggregate = userId ? [...aggregateComments, ...aggregateFavorite(userId)] : [...aggregateComments, ...aggregateDefaultFavorite];
+    const aggregate = userId ? [...aggregateComments, ...aggregateFavorite(userId), ...aggregateAuthor] : [...aggregateComments, ...aggregateDefaultFavorite, ...aggregateAuthor];
 
     return this.offerModel
       .aggregate([
@@ -68,7 +80,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   // Удалить по id ------------------------------------------------------------------------------------- ()
-  public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+  public async deleteById(offerId: OfferEntity['id']): Promise<DocumentType<OfferEntity> | null> {
     const result = this.offerModel
       .findByIdAndDelete(offerId)
       .exec();
@@ -94,7 +106,7 @@ export class DefaultOfferService implements OfferService {
 
   // Найти премиальные предложения для города ----------------------------------------------------------------- ()
   public async findPremiumByCityName(city: string, userId: string): Promise<DocumentType<OfferEntity>[] | null> {
-    const aggregate = userId ? [...aggregateComments, ...aggregateFavorite(userId)] : [...aggregateComments, ...aggregateDefaultFavorite];
+    const aggregate = userId ? [...aggregateComments, ...aggregateFavorite(userId), ...aggregateAuthor] : [...aggregateComments, ...aggregateDefaultFavorite, ...aggregateAuthor];
 
     return await this.offerModel
       .aggregate([
